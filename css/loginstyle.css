@@ -1,0 +1,466 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Base styles */
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #000000, #1a1a1a);
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+@keyframes gradientBG {
+    0% {
+        background: linear-gradient(45deg, #000000, #1a1a1a);
+    }
+    50% {
+        background: linear-gradient(45deg, #1a1a1a, #2c2c2c);
+    }
+    100% {
+        background: linear-gradient(45deg, #000000, #1a1a1a);
+    }
+}
+
+
+/* Container styling */
+
+.login-page,
+.register-page {
+    width: 100%;
+    max-width: clamp(300px, 90vw, 420px);
+    padding: clamp(20px, 6vh, 8%) 20px 0;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+
+/* Logo styling */
+
+.Logo {
+    width: clamp(150px, 40vw, 200px);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    transition: all 0.3s ease;
+    display: block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: clamp(20px, 5vh, 30px);
+}
+
+.Logo:hover {
+    transform: translateX(-50%) scale(1.05);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.5));
+}
+
+
+/* Form styling */
+
+.form {
+    position: relative;
+    background: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    max-width: clamp(280px, 90vw, 400px);
+    margin: 0 auto;
+    padding: clamp(20px, 5vw, 40px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.form-title {
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(20px, 5vw, 24px);
+    margin-bottom: clamp(25px, 6vh, 35px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+
+/* Input styling */
+
+.input-group,
+.password-container {
+    position: relative;
+    margin-bottom: clamp(25px, 5vh, 35px);
+}
+
+.input-group label,
+.password-container label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: clamp(13px, 3.5vw, 14px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    font-family: 'Poppins', sans-serif;
+    padding: 0 5px;
+    background: transparent;
+    z-index: 1;
+}
+
+.form input {
+    font-family: 'Poppins', sans-serif;
+    outline: 0;
+    background: rgba(242, 242, 242, 0.9);
+    width: 100%;
+    border: 2px solid transparent;
+    padding: clamp(12px, 3vw, 15px);
+    padding-right: 40px;
+    box-sizing: border-box;
+    font-size: clamp(13px, 3.5vw, 14px);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus~label,
+.input-group input:valid~label,
+.password-container input:focus~label,
+.password-container input:valid~label {
+    top: -11px;
+    left: 10px;
+    font-size: 12px;
+    color: #48A277;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0 5px;
+    z-index: 2;
+    border-radius: 4px;
+}
+
+.form input:focus {
+    background: #ffffff;
+    border-color: #48A277;
+    box-shadow: 0 0 15px rgba(72, 162, 119, 0.3);
+}
+
+
+/* Password field */
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    transition: all 0.3s ease;
+    z-index: 2;
+    padding: 5px;
+}
+
+.toggle-password:hover {
+    color: #48A277;
+}
+
+.form input[type="password"] {
+    letter-spacing: 0.3em;
+}
+
+
+/* Button styling */
+
+.form button {
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #48A277;
+    width: 100%;
+    border: 0;
+    padding: clamp(12px, 3vw, 15px);
+    color: #FFFFFF;
+    font-size: clamp(13px, 3.5vw, 14px);
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: clamp(20px, 5vh, 30px);
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.form button:hover {
+    background: #3d8b65;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(72, 162, 119, 0.4);
+}
+
+.form button:active {
+    transform: translateY(0);
+}
+
+
+/* Message styling */
+
+.form .message {
+    margin: clamp(15px, 4vh, 20px) 0 0;
+    color: #b3b3b3;
+    font-size: clamp(12px, 3vw, 13px);
+    font-family: 'Poppins', sans-serif;
+}
+
+.form .message a {
+    color: #48A277;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.form .message a:hover {
+    color: #3d8b65;
+    text-shadow: 0 0 10px rgba(72, 162, 119, 0.3);
+}
+
+
+/* Error and Success Messages */
+
+.error-message,
+.error-message1 {
+    color: #ff4444;
+    font-size: clamp(12px, 3vw, 14px);
+    font-family: 'Poppins', sans-serif;
+    animation: fadeInUp 0.5s ease;
+    margin-bottom: clamp(20px, 4vh, 25px);
+    text-align: left;
+    background: rgba(255, 68, 68, 0.1);
+    padding: 10px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #ff4444;
+}
+
+.success-message {
+    color: #48A277;
+    font-size: clamp(13px, 3.5vw, 14px);
+    font-family: 'Poppins', sans-serif;
+    animation: fadeInUp 0.5s ease;
+    margin-bottom: clamp(20px, 4vh, 25px);
+    text-align: left;
+    background: rgba(72, 162, 119, 0.1);
+    padding: 10px 15px;
+    border-radius: 4px;
+    border-left: 4px solid #48A277;
+}
+
+
+/* Notification styling */
+
+.notification {
+    position: fixed;
+    top: clamp(10px, 3vh, 20px);
+    right: clamp(10px, 3vw, 20px);
+    padding: clamp(12px, 3vw, 15px) clamp(15px, 4vw, 20px);
+    border-radius: 4px;
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: clamp(280px, 90vw, 500px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+    background-color: red;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification-success {
+    background: #48A277;
+    border-left: 4px solid #2d714f;
+}
+
+.notification-error {
+    background: #ff4444;
+    border-left: 4px solid #cc0000;
+}
+
+.notification-message {
+    flex-grow: 1;
+    font-size: clamp(13px, 3.5vw, 14px);
+    line-height: 1.4;
+}
+
+.notification .close-btn {
+    padding: 4px 8px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.notification .close-btn:hover {
+    opacity: 1;
+}
+
+.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(16px, 4vw, 20px);
+}
+
+
+/* Animations */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Loading animation */
+
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading:after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s linear infinite;
+}
+
+@keyframes button-loading-spinner {
+    from {
+        transform: rotate(0turn);
+    }
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+
+/* Media Queries */
+
+@media screen and (max-width: 480px) {
+    .form {
+        padding: 20px 15px;
+    }
+    .form input,
+    .form button {
+        font-size: 14px;
+    }
+    .notification {
+        left: 10px;
+        right: 10px;
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .form {
+        padding: 15px;
+    }
+    .Logo {
+        width: 120px;
+    }
+    .notification {
+        font-size: 12px;
+        padding: 10px 15px;
+    }
+    .form-title {
+        font-size: 18px;
+    }
+}
+
+
+/* Landscape mode */
+
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    .login-page,
+    .register-page {
+        padding-top: 20px;
+        min-height: auto;
+    }
+    .form {
+        margin: 10px auto;
+        padding: 20px 15px;
+    }
+    .Logo {
+        width: 110px;
+        margin-bottom: 15px;
+    }
+    .input-group,
+    .password-container {
+        margin-bottom: 15px;
+    }
+    .form-title {
+        margin-bottom: 20px;
+    }
+}
+
+
+/* Dark mode support */
+
+@media (prefers-color-scheme: dark) {
+    .form input {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+    .form input:focus {
+        background: rgba(255, 255, 255, 0.15);
+    }
+    .input-group label,
+    .password-container label {
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+
+/* Touch device optimizations */
+
+@media (hover: none) {
+    .form button:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .form input:hover {
+        border-color: initial;
+    }
+}
+
+
+/* Reduced motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

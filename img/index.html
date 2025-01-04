@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>GenZMart</title>
+
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap" rel="stylesheet" />
+
+    <!--Icons-->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!--alpine-js-->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!--app alipine-->
+    <script src="src/app.js" async></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+
+<body>
+    <!-- navbar start -->
+    <nav class="navbar" x-data>
+        <div id="particles-js"></div>
+
+        <a href="#" class="navbar-logo">GenZ<span>Mart</span></a>
+
+        <div class="navbar-nav">
+            <a href="#home">Home</a>
+            <a href="#about">Tentang kami</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">Kategori</a>
+                <div class="dropdown-content">
+                    <a href="#menu">Makanan</a>
+                    <a href="#menu2">Minuman</a>
+                    <a href="#menu3">Sayuran</a>
+                </div>
+            </div>
+            <a href="#contact" style="margin-top: 0px">Customer Service</a>
+        </div>
+        <div class="navbar-extra">
+            <a href="#" id="search-button"> <i data-feather="search"></i></a>
+            <a href="#" id="shopping-cart-button"><i data-feather="shopping-cart"></i>
+          <span
+            class="quantity-badge"
+            x-show="$store.cart.quantity"
+            x-text="$store.cart.quantity"
+          ></span>
+        </a>
+            <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+        </div>
+        <!-- search form start -->
+        <div class="search-form">
+            <input type="search" id="search-box" placeholder="search here..." />
+            <label for="search-box"><i data-feather="search"></i></label>
+        </div>
+        <!-- search form end -->
+
+        <!--sopping cart start-->
+        <div class="shopping-cart">
+            <div class="shopping-cart-items">
+                <template x-for="(item,index) in $store.cart.items" x-keys="index">
+          <div class="cart-items">
+            <img
+                    :src="$store.cart.getImagePath(item)"
+                    :alt="item.name"
+                    class="menu-card-img"
+                />
+            <div class="items-detail">
+              <h3 x-text="item.name"></h3>
+              <div class="items-price">
+                <span x-text="rupiah(item.price)"></span> &times;
+                <button id="remove" @click="$store.cart.remove(item.id)">
+                  &minus;
+                </button>
+                <span x-text="item.quantity"></span>
+                <button id="add" @click="$store.cart.add(item)">&plus;</button>
+                &equals;
+                <span x-text="rupiah(item.total)"></span>
+              </div>
+            </div>
+          </div>
+        </template>
+                <h4 x-show="!$store.cart.items.length" style="margin-top: 1rem">
+                    Cart is Empty
+                </h4>
+                <h4 x-show="$store.cart.items.length">
+                    Total : <span x-text="rupiah($store.cart.total)"></span>
+                </h4>
+
+                <div class="form-container" x-show="$store.cart.items.length">
+                    <form action="" id="checkoutForm">
+                        <input type="hidden" name="items" x-model="JSON.stringify($store.cart.items)" />
+                        <input type="hidden" name="total" x-model="$store.cart.total" />
+                        <h5>Custommer Detail</h5>
+                        <label for="name">
+              <span>Name</span>
+              <input type="text" name="name" id="name" />
+            </label>
+                        <label for="email">
+              <span>Email</span>
+              <input type="email" name="email" id="email" />
+            </label>
+                        <label for="alamat">
+              <span>Alamat</span>
+              <input type="text" name="alamat" id="alamat" />
+            </label>
+                        <label for="phone">
+              <span>Phone</span>
+              <input type="number" name="phone" id="phone" autocomplete="off" />
+            </label>
+
+                        <button class="checkout-button disabled" type="submit" id="checkout-button" value="checkout">
+              checkout
+            </button>
+                    </form>
+                </div>
+            </div>
+            <template x-for="(item, index) in items" x-key="index">
+        <div class="menu-card">
+          <!-- ... other content ... -->
+          <a
+            href="#"
+            @click.prevent="showItemDetails(item)"
+            class="items-detail-button"
+          >
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <use href="img/feather-sprite.svg#eye" />
+            </svg>
+          </a>
+          <!-- ... other content ... -->
+        </div>
+      </template>
+            <!--sopping cart end-->
+    </nav>
+
+    <!-- varbar end -->
+
+    <!--hero section start -->
+    <section class="hero" id="home">
+        <div class="mask-container">
+            <main class="content">
+                <h1>Selamat Datang di GenZ <span> Mart</span></h1>
+                <p>
+                    Belanja Semua yang Kamu Butuhkan dengan Harga Terbaik! Dari Sembako Hingga Elektronik, Semuanya Ada di Sini!.
+                </p>
+            </main>
+        </div>
+    </section>
+    <!--section end -->
+    <div id="partikel-js"></div>
+    <!--abaout section start-->
+    <section id="about" class="about">
+        <h2><span>Kenali GenZ</span> Mart</h2>
+
+        <div class="row">
+            <div class="about-img">
+                <img src="img/okee.jpeg" alt="Tentang Kami" />
+            </div>
+            <div class="content">
+                <h3>Kenapa kalian harus memilih GenZ Mart?</h3>
+                <p>
+                    Di GenZ Mart, kami tidak hanya menyediakan sembako berkualitas, tetapi juga berbagai kebutuhan lainnya, mulai dari elektronik hingga peralatan rumah tangga. Semua yang kamu butuhkan ada di sini!"
+                </p>
+                <p>
+                    Dedikasi kami adalah memberikan pengalaman belanja yang mudah dan nyaman, dengan produk-produk berkualitas dan harga terbaik. Kami selalu berupaya memberikan layanan terbaik untuk setiap pelanggan, kapanpun dan di manapun!
+                </p>
+            </div>
+        </div>
+    </section>
+    <!--about section end-->
+
+    <!--menu section start-->
+    <section id="menu" class="menu" x-data="menu">rr
+        <div id="par-js"></div>
+        <h2><span>Maka</span>nan</h2>
+        <p>
+            Dari beras, mie, hingga roti, kami menyediakan berbagai pilihan karbohidrat berkualitas tinggi untuk memenuhi kebutuhan gizi harian Anda. Nikmati rasa terbaik dengan harga yang bersahabat.
+        </p>
+
+        <div class="row">
+            <template x-for="(item, index) in items" x-key="index">
+          <div class="menu-card">
+            <div class="product-icons">
+              <a href="#" @click.prevent="$store.cart.add(item)">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#shopping-cart" />
+                </svg>
+              </a>
+              <a
+                href="#"
+                @click.prevent="showItemDetails(item)"
+                class="items-detail-button"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#eye" />
+                </svg>
+              </a>
+            </div>
+            <img
+              :src="`img/menu0/${item.img}`"
+              :alt="item.name"
+              class="menu-card-img"
+            />
+            <h3 x-text="item.name" class="menu-card-title"></h3>
+            <div class="product-stars">
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+            </div>
+            <div class="menu-card-price">
+              <span x-text="rupiah(item.price)"></span>
+            </div>
+          </div>
+        </template>
+        </div>
+    </section>
+    <section id="menu2" class="menu" x-data="menu2">
+        <div id="par1-js"></div>
+        <h2><span>Minu</span>man</h2>
+        <p>
+            Temukan pilihan minuman favoritmu, mulai dari teh, kopi, hingga jus buah segar. Apapun selera dan suasana hatimu, kami punya minuman yang pas untuk kamu nikmati.
+        </p>
+
+        <div class="row">
+            <template x-for="(item, index) in items" x-key="index">
+          <div class="menu-card">
+            <div class="product-icons">
+              <a href="#" @click.prevent="$store.cart.add(item)">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#shopping-cart" />
+                </svg>
+              </a>
+              <a
+                href="#"
+                @click.prevent="showItemDetails(item)"
+                class="items-detail-button"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#eye" />
+                </svg>
+              </a>
+            </div>
+            <img
+              :src="`img/menu2/${item.img}`"
+              :alt="item.name"
+              class="menu-card-img"
+            />
+            <h3 x-text="item.name" class="menu-card-title"></h3>
+            <div class="product-stars">
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+            </div>
+            <div class="menu-card-price">
+              <span x-text="rupiah(item.price)"></span>
+            </div>
+          </div>
+        </template>
+        </div>
+    </section>
+    <section id="menu3" class="menu" x-data="menu3">
+        <div id="par2-js"></div>
+        <h2><span>Sayu</span>ran</h2>
+        <p>
+            "Kami menyediakan sayuran segar setiap hari, mulai dari bayam, wortel, hingga brokoli. Jaga kesehatan keluarga dengan pilihan sayuran berkualitas yang kaya akan nutrisi.
+        </p>
+
+        <div class="row">
+            <template x-for="(item, index) in items" x-key="index">
+          <div class="menu-card">
+            <div class="product-icons">
+              <a href="#" @click.prevent="$store.cart.add(item)">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#shopping-cart" />
+                </svg>
+              </a>
+              <a
+                href="#"
+                @click.prevent="showItemDetails(item)"
+                class="items-detail-button"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <use href="img/feather-sprite.svg#eye" />
+                </svg>
+              </a>
+            </div>
+            <img
+              :src="`img/menu3/${item.img}`"
+              :alt="item.name"
+              class="menu-card-img"
+            />
+            <h3 x-text="item.name" class="menu-card-title"></h3>
+            <div class="product-stars">
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+              <svg
+                width="24"
+                height="24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <use href="img/feather-sprite.svg#star" />
+              </svg>
+            </div>
+            <div class="menu-card-price">
+              <span x-text="rupiah(item.price)"></span>
+            </div>
+          </div>
+        </template>
+        </div>
+    </section>
+    <!--menu section end-->
+
+    <!--contact section start-->
+    <section id="contact" class="contact">
+        <div id="par3-js"></div>
+        <h2><span>Customer</span> Service</h2>
+        <p>
+            Kami di SembakoMad selalu siap membantu Anda dengan pertanyaan apa pun, mulai dari informasi produk hingga bantuan pemesanan. Hubungi tim Customer Service kami yang ramah dan profesional untuk pengalaman belanja yang lebih mudah.
+        </p>
+
+        <div class="row">
+            <form id="contactForm">
+                <div class="input-group">
+                    <i data-feather="user"></i>
+                    <input type="text" placeholder="Nama" required />
+                </div>
+                <div class="input-group">
+                    <i data-feather="mail"></i>
+                    <input type="email" placeholder="Email" required />
+                </div>
+                <div class="input-group2">
+                    <i data-feather="send"></i>
+                    <textarea placeholder="Pesan" required></textarea>
+                </div>
+                <button class="btn" type="submit" id="sendEmail">Kirim Pesan</button>
+            </form>
+        </div>
+    </section>
+    <!--contact section end-->
+
+    <!--footer start-->
+    <footer>
+        <div class="socials">
+            <a href="#"><i data-feather="instagram"></i></a>
+            <a href="#"><i data-feather="phone"></i></a>
+            <a href="#"><i data-feather="facebook"></i></a>
+        </div>
+
+        <div class="links">
+            <a href="#home">Home</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#contact">Kontak</a>
+            <a href="#">Home</a>
+        </div>
+
+        <div class="credit">
+            <p>Createt By <a href="">GenZMart</a>. | &copy; 2024.</p>
+        </div>
+    </footer>
+    <!--footer end-->
+
+    <!-- modal box items detail start -->
+    <div class="modal" id="items-detail-modal">
+        <div class="modal-container">
+            <a href="#" class="close-icon"><i data-feather="x"></i></a>
+            <div class="modal-content">
+                <img src="img/menu/6.jpg" alt="Product 1" />
+                <div class="product-content"></div>
+            </div>
+        </div>
+    </div>
+    <!-- modal box items detail end -->
+
+    <!--Icons-->
+    <script>
+        feather.replace();
+    </script>
+
+    <!--java script-->
+    <script src="js/script.js"></script>
+    <script>
+        function toggleDescription(element) {
+            element.classList.toggle("active");
+        }
+    </script>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="js/script.js"></script>
+<script src="js/app.js"></script>
+
+</html>
