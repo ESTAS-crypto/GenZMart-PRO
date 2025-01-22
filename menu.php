@@ -6,6 +6,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Fungsi format rupiah
+function formatRupiah($angka) {
+    if ($angka === null || $angka === '') return 'Rp 0';
+    return 'Rp ' . number_format($angka, 0, ',', '.');
+}
+
+// Rupiah format untuk JavaScript global
+function rupiah($number) {
+    return formatRupiah($number);
+}
+
 // Cek autentikasi
 if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     header("Location: index.php");
@@ -162,8 +173,8 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
 
     <!-- Initialize menu data -->
     <script>
-    const menuData = <?php echo json_encode($menu_data); ?>;
-    window.rupiah = (number) => {
+    const menuData = <?= json_encode($menu_data) ?>;
+    window.rupiah = function(number) {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
             currency: 'IDR',
@@ -173,9 +184,10 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
     </script>
 
     <!-- Custom scripts -->
-    <script src="src/app.js"></script>
     <script src="js/script.js"></script>
+    <script src="src/app.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body>
@@ -185,13 +197,13 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
         <div class="admin-info">
             <button class="info-button" onclick="toggleUserMenu()">
                 <i class="fas fa-user"></i>
-                <?php echo $userName; ?>
+                <?= $userName ?>
                 <i class="fas fa-chevron-down"></i>
             </button>
             <div class="dropdown-menu" id="userDropdown">
                 <div class="user-role">
                     <i class="fas fa-id-badge"></i>
-                    Role: <?php echo $displayRole; ?>
+                    Role: <?= $displayRole ?>
                 </div>
 
                 <?php if (in_array(strtolower($userRole), ['admin', 'god'])): ?>
@@ -223,14 +235,14 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
                     <i class="fas fa-shopping-bag"></i>
                     <span>Histori pesanan</span>
                     <?php if (!empty($userData['pending_orders'])): ?>
-                    <span class="badge"><?php echo $userData['pending_orders']; ?></span>
+                    <span class="badge"><?= $userData['pending_orders'] ?></span>
                     <?php endif; ?>
                 </div>
 
                 <?php if (isset($userData['points'])): ?>
                 <div class="points-info">
                     <i class="fas fa-star"></i>
-                    <span>Points: <?php echo number_format($userData['points']); ?></span>
+                    <span>Points: <?= number_format($userData['points']) ?></span>
                 </div>
                 <?php endif; ?>
 
@@ -256,12 +268,13 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
                 <a href="#" class="dropbtn">Kategori</a>
                 <div class="dropdown-content">
                     <?php while($category = $categories->fetch_assoc()): ?>
-                    <a href="#menu<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></a>
+                    <a href="#menu<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></a>
                     <?php endwhile; ?>
                 </div>
             </div>
             <a href="#contact">pelayanan pelanggan</a>
         </div>
+
 
         <div class="navbar-extra">
             <a href="#" id="search-button"><i data-feather="search"></i></a>
@@ -271,7 +284,6 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
             </a>
             <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
         </div>
-
         <!-- Search Form -->
         <div class="search-form">
             <input type="search" id="search-box" placeholder="search here..." />
@@ -288,32 +300,32 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
             </div>
 
             <div class="shopping-cart-items">
+                <!-- Empty cart message -->
+                <div class="empty-cart" x-show="!$store.cart.items.length">
+                    <i data-feather="shopping-cart"></i>
+                    <p>Keranjang belanja masih kosong</p>
+                </div>
+
+                <!-- Cart items -->
                 <template x-for="(item,index) in $store.cart.items" :key="index">
                     <div class="cart-items" :data-item-id="item.id">
-                        <img :src="item.img" :alt="item.name" />
+                        <img :src="item.img" :alt="item.name" onerror="this.src='img/default.jpg'" />
                         <div class="items-detail">
                             <h3 class="item-name" x-text="item.name"></h3>
                             <div class="items-price">
                                 <div class="price-info">
                                     <span class="unit-price" x-text="rupiah(item.price)"></span>
                                     <span class="quantity-controls">
-                                        <button class="qty-btn" @click="$store.cart.remove(item.id)">&minus;</button>
+                                        <button class="qty-btn minus"
+                                            @click="$store.cart.remove(item.id)">&minus;</button>
                                         <span class="qty-display" x-text="item.quantity"></span>
-                                        <button class="qty-btn" @click="$store.cart.add(item)"
-                                            :disabled="!$store.cart.isStockAvailable(item)"
-                                            :class="{ 'disabled': !$store.cart.isStockAvailable(item) }">
-                                            &plus;
-                                        </button>
+                                        <button class="qty-btn plus" @click="$store.cart.add(item)"
+                                            :disabled="!$store.cart.isStockAvailable(item)">&plus;</button>
                                     </span>
                                 </div>
                                 <div class="total-price">
-                                    = <span x-text="rupiah(item.total)"></span>
+                                    = <span x-text="rupiah(item.price * item.quantity)"></span>
                                 </div>
-                            </div>
-                            <div class="stock-info" x-show="item.stock <= 5">
-                                <small class="stock-warning">
-                                    Sisa stok: <span x-text="item.stock - item.quantity"></span>
-                                </small>
                             </div>
                         </div>
                         <button class="remove-item" @click="$store.cart.removeAll(item.id)">
@@ -321,12 +333,6 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
                         </button>
                     </div>
                 </template>
-
-                <!-- Empty cart message -->
-                <div class="empty-cart" x-show="!$store.cart.items.length">
-                    <i data-feather="shopping-cart"></i>
-                    <p>Keranjang belanja masih kosong</p>
-                </div>
             </div>
 
             <!-- Cart total -->
@@ -337,7 +343,7 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
             <!-- Checkout form -->
             <div class="checkout-section" x-show="$store.cart.items.length">
                 <form id="checkoutForm" class="checkout-form" x-data="checkoutForm()" @submit.prevent="handleCheckout"
-                    data-user-profile='<?php echo htmlspecialchars(json_encode($userProfileData), ENT_QUOTES, 'UTF-8'); ?>'>
+                    data-user-profile='<?= htmlspecialchars(json_encode($userProfileData), ENT_QUOTES, 'UTF-8') ?>'>
                     <h5>Data Pemesan</h5>
 
                     <div class="form-group">
@@ -422,49 +428,63 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
     while($category = $categories->fetch_assoc()): 
         $categoryId = $category['id'];
     ?>
-    <section id="menu<?php echo $categoryId; ?>" class="menu"
-        x-data="{ items: menuData[<?php echo $categoryId; ?>] || [] }">
-        <h2><span><?php echo substr($category['name'], 0, 4); ?></span><?php echo substr($category['name'], 4); ?></h2>
-        <p><?php echo htmlspecialchars($category['description']); ?></p>
+    <!-- Menu Section in menu.php -->
+    <section id="menu<?= $categoryId ?>" class="menu">
+        <h2><span><?= substr($category['name'], 0, 4) ?></span><?= substr($category['name'], 4) ?></h2>
+        <p><?= htmlspecialchars($category['description']) ?></p>
 
         <div class="row">
-            <template x-for="item in items" :key="item.id">
-                <div class="menu-card" :data-item-id="item.id">
-                    <div class="product-icons">
-                        <a href="#" @click.prevent="$store.cart.add(item)" x-show="item.stock > 0"
-                            :class="{ 'disabled': !$store.cart.isStockAvailable(item) }">
-                            <i data-feather="shopping-cart"></i>
-                        </a>
-                        <a href="#" @click.prevent="showItemDetails(item)" class="items-detail-button">
-                            <i data-feather="eye"></i>
-                        </a>
-                    </div>
+            <?php foreach(getMenuItems($categoryId) as $item): ?>
+            <div class="menu-card" data-item-id="<?= $item['id'] ?>">
+                <div class="product-icons">
+                    <?php if ($item['stock'] > 0): ?>
+                    <a href="#" onclick="return addToCart({
+                        id: <?= $item['id'] ?>,
+                        name: '<?= addslashes($item['name']) ?>',
+                        price: <?= $item['price'] ?>,
+                        img: '<?= addslashes($item['img']) ?>',
+                        stock: <?= $item['stock'] ?>,
+                        description: '<?= addslashes($item['description']) ?>'
+                    })">
+                        <i data-feather="shopping-cart"></i>
+                    </a>
+                    <?php endif; ?>
+                    <a href="#" onclick="return showItemDetails({
+                        id: <?= $item['id'] ?>,
+                        name: '<?= addslashes($item['name']) ?>',
+                        price: <?= $item['price'] ?>,
+                        img: '<?= addslashes($item['img']) ?>',
+                        stock: <?= $item['stock'] ?>,
+                        description: '<?= addslashes($item['description']) ?>'
+                    })">
+                        <i data-feather="eye"></i>
+                    </a>
+                </div>
 
-                    <img :src="item.img" :alt="item.name" class="menu-card-img" onerror="this.src='img/default.jpg'" />
-                    <h3 class="menu-card-title" x-text="item.name"></h3>
+                <img src="<?= $item['img'] ?>" alt="<?= $item['name'] ?>" class="menu-card-img"
+                    onerror="this.src='img/default.jpg'" />
+                <h3 class="menu-card-title"><?= $item['name'] ?></h3>
 
-                    <div class="product-stars">
-                        <template x-for="i in 5">
-                            <i data-feather="star" class="star-full"></i>
-                        </template>
-                    </div>
+                <div class="product-stars">
+                    <?php for($i = 0; $i < 5; $i++): ?>
+                    <i data-feather="star" class="star-full"></i>
+                    <?php endfor; ?>
+                </div>
 
-                    <div class="menu-card-price">
-                        <div class="price-amount" x-text="rupiah(item.price)"></div>
-                        <div class="stock-status">
-                            <template x-if="item.stock <= 0">
-                                <span class="out-of-stock">Stok Habis</span>
-                            </template>
-                            <template x-if="item.stock > 0 && item.stock <= 5">
-                                <span class="low-stock">Sisa Stok: <span x-text="item.stock"></span></span>
-                            </template>
-                            <template x-if="item.stock > 5">
-                                <span class="in-stock">Stok: <span x-text="item.stock"></span></span>
-                            </template>
-                        </div>
+                <div class="menu-card-price">
+                    <div class="price-amount"><?= rupiah($item['price']) ?></div>
+                    <div class="stock-status">
+                        <?php if ($item['stock'] <= 0): ?>
+                        <span class="out-of-stock">Stok Habis</span>
+                        <?php elseif ($item['stock'] <= 5): ?>
+                        <span class="low-stock">Sisa Stok: <?= $item['stock'] ?></span>
+                        <?php else: ?>
+                        <span class="in-stock">Stok: <?= $item['stock'] ?></span>
+                        <?php endif; ?>
                     </div>
                 </div>
-            </template>
+            </div>
+            <?php endforeach; ?>
         </div>
     </section>
     <?php endwhile; ?>
@@ -512,7 +532,7 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
         </div>
 
         <div class="credit">
-            <p>Created By <a href="">GenZMart</a> | &copy; 2024.</p>
+            <p>Created by <a href="">GenZMart</a> | &copy; 2024.</p>
         </div>
     </footer>
 
@@ -523,130 +543,54 @@ $displayRole = $userRole ? formatRoleDisplay($userRole) : 'Customer';
             <div class="modal-content"></div>
         </div>
     </div>
-
-    <!-- Initialize Cart Store -->
     <script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('cart', {
-            items: [],
-            quantity: 0,
-            total: 0,
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbarNav = document.querySelector('.navbar-nav');
+        const hamburgerMenu = document.querySelector('#hamburger-menu');
+        const searchForm = document.querySelector('.search-form');
+        const searchBox = document.querySelector('#search-box');
+        const searchButton = document.querySelector('#search-button');
+        const shoppingCart = document.querySelector('.shopping-cart');
+        const shoppingCartButton = document.querySelector('#shopping-cart-button');
 
-            findMenuDataItem(itemId) {
-                for (const categoryItems of Object.values(menuData)) {
-                    const item = categoryItems.find(item => item.id === itemId);
-                    if (item) return item;
-                }
-                return null;
-            },
+        // Toggle class active untuk hamburger menu
+        document.querySelector('#hamburger-menu').onclick = (e) => {
+            e.preventDefault();
+            navbarNav.classList.toggle('active');
+        };
 
-            isStockAvailable(item) {
-                if (!item?.id) return false;
-                const cartItem = this.items.find(i => i.id === item.id);
-                const currentQuantity = cartItem?.quantity || 0;
-                const menuItem = this.findMenuDataItem(item.id);
-                return menuItem && menuItem.stock > currentQuantity;
-            },
+        // Toggle class active untuk search form
+        document.querySelector('#search-button').onclick = (e) => {
+            e.preventDefault();
+            searchForm.classList.toggle('active');
+            searchBox.focus();
+        };
 
-            add(item) {
-                if (!this.isStockAvailable(item)) {
-                    showNotification('Stok tidak mencukupi', 'error');
-                    return false;
-                }
+        // Toggle shopping cart
+        document.querySelector('#shopping-cart-button').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            shoppingCart.classList.toggle('active');
+        };
 
-                const existingItem = this.items.find(i => i.id === item.id);
-                if (existingItem) {
-                    existingItem.quantity++;
-                    existingItem.total = existingItem.quantity * existingItem.price;
-                } else {
-                    this.items.push({
-                        ...item,
-                        quantity: 1,
-                        total: item.price
-                    });
-                }
-
-                this.updateTotals();
-                showNotification('Item berhasil ditambahkan ke keranjang', 'success');
-                return true;
-            },
-
-            remove(itemId) {
-                const itemIndex = this.items.findIndex(i => i.id === itemId);
-                if (itemIndex === -1) return;
-
-                if (this.items[itemIndex].quantity > 1) {
-                    this.items[itemIndex].quantity--;
-                    this.items[itemIndex].total = this.items[itemIndex].price * this.items[itemIndex]
-                        .quantity;
-                } else {
-                    this.items.splice(itemIndex, 1);
-                }
-
-                this.updateTotals();
-            },
-
-            removeAll(itemId) {
-                this.items = this.items.filter(i => i.id !== itemId);
-                this.updateTotals();
-            },
-
-            clear() {
-                this.items = [];
-                this.updateTotals();
-                showNotification('Keranjang telah dikosongkan', 'success');
-            },
-
-            updateTotals() {
-                this.quantity = this.items.reduce((sum, item) => sum + item.quantity, 0);
-                this.total = this.items.reduce((sum, item) => sum + item.total, 0);
+        // Tutup cart saat klik di luar
+        document.addEventListener('click', function(e) {
+            if (!shoppingCart.contains(e.target) &&
+                !shoppingCartButton.contains(e.target) &&
+                shoppingCart.classList.contains('active')) {
+                shoppingCart.classList.remove('active');
             }
         });
-    });
 
-    // Show notification
-    window.showNotification = function(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-            <span>${message}</span>
-        `;
-
-        Object.assign(notification.style, {
-            position: 'fixed',
-            top: '4.5rem',
-            right: '1rem',
-            zIndex: '9999',
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            backgroundColor: type === 'success' ? '#4CAF50' : '#f44336',
-            color: 'white',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            transform: 'translateX(110%)',
-            transition: 'transform 0.3s ease'
+        // Klik di luar hamburger menu
+        document.addEventListener('click', function(e) {
+            if (!hamburgerMenu.contains(e.target) && !navbarNav.contains(e.target)) {
+                navbarNav.classList.remove('active');
+            }
+            if (!searchButton.contains(e.target) && !searchForm.contains(e.target)) {
+                searchForm.classList.remove('active');
+            }
         });
-
-        document.body.appendChild(notification);
-        requestAnimationFrame(() => {
-            notification.style.transform = 'translateX(0)';
-        });
-
-        setTimeout(() => {
-            notification.style.transform = 'translateX(110%)';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    };
-
-    // Initialize Feather icons
-    document.addEventListener('DOMContentLoaded', function() {
-        feather.replace();
-        if (typeof particlesJS !== 'undefined') {
-            initParticles();
-        }
     });
     </script>
 </body>

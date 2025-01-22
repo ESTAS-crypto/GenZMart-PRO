@@ -197,23 +197,146 @@ html {
     right: -7px;
 }
 
+
+/* Shopping Cart Styles */
+
 .shopping-cart {
     position: fixed;
-    /* Changed from absolute to fixed for better positioning */
-    top: 0;
+    top: 100px;
+    /* Sesuaikan dengan tinggi navbar */
     right: -100%;
     width: 35rem;
-    height: 100vh;
-    background-color: #fff;
-    color: var(--bg);
-    transition: 0.5s;
-    display: flex;
-    flex-direction: column;
+    height: calc(100vh - 100px);
+    padding: 2rem;
+    background-color: white;
+    transition: 0.3s;
     z-index: 9999;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
 .shopping-cart.active {
     right: 0;
+}
+
+
+/* Cart Items Styles */
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-items {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-items img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.items-detail {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.qty-btn {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.qty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* Empty Cart Message */
+
+.empty-cart {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.empty-cart i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ddd;
+}
+
+
+/* Cart Total */
+
+.cart-total {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 1rem 0;
+    border-top: 1px solid #eee;
+    margin-top: auto;
+}
+
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .shopping-cart {
+        width: 100%;
+        padding: 1rem;
+    }
+}
+
+
+/* Quantity Badge */
+
+.quantity-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff0000;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Fix untuk navbar-extra */
+
+.navbar-extra a {
+    position: relative;
+    color: inherit;
+    margin: 0 0.5rem;
 }
 
 
